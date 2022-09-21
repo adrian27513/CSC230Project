@@ -23,19 +23,24 @@ void checkSub(long a, long b)
 void checkMul(long a, long b)
 {
   if (a != 0 || b != 0) {
-    if ((a > 0 && b > 0) || (a < 0 && b < 0)) {
+    if (a > 0 && b > 0) {
       long max = LONG_MAX / b;
       if (a > max) {
         exit(100);
       }
+    } else if (a < 0 && b < 0) {
+      long max = LONG_MAX / b;
+      if (a < max) {
+        exit(100);
+      }
     } else if (a > 0 && b < 0) {
-      long min = LONG_MIN / b;
-      if (a > min) {
+      long max = LONG_MIN / b;
+      if (a > max) {
         exit(100);
       }
     } else if (a < 0 && b > 0) {
-      long min = LONG_MIN / a;
-      if (b > min) {
+      long max = LONG_MIN / a;
+      if (b > max) {
         exit(100);
       }
     }

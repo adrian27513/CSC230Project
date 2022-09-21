@@ -20,12 +20,12 @@ static long parseExpression()
       case '~':
         a = parseExpression();
         b = parseExpression();
-        checkAdd(a, b);
+        checkSub(a, b);
         return a - b;
       case '*':
         a = parseExpression();
         b = parseExpression();
-        checkAdd(a, b);
+        checkMul(a, b);
         return a * b;
       case '/':
         a = parseExpression();
