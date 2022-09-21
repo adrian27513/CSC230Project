@@ -1,5 +1,8 @@
 /**
-  */
+  @file base.h
+  @author Adrian Chan (amchan)
+  Header file and declares public implementation of base10.c and base32.c
+*/
 
 /** Exit status indicating that the program was given invalid input. */
 #define FAIL_INPUT 102

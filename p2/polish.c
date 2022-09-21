@@ -1,9 +1,18 @@
+/**
+  @file polish.c
+  @author Adrian Chan (amchan)
+  This program reads in an expression in polish notation and prints out the value of the expression in either base32 or base10.
+*/
 #include "base.h"
 #include "bounds.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
+/**
+  Parses the polish notation expression from standard input until EOF in either base10 or base32. Exits the program if there is no input.
+  @return value of the polish expression read from standard input.
+*/
 static long parseExpression()
 { 
   int ch = getchar();
@@ -45,6 +54,11 @@ static long parseExpression()
   exit(FAIL_INPUT);
 }
 
+/**
+  This is the program starting point. Reads in whitespace from standard input until reaching the first non-white space character. It prints out the value of the
+  polish notation expression(s) that was given in standard input.
+  @return program exit status
+*/
 int main()
 {
   

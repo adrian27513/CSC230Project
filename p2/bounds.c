@@ -1,3 +1,8 @@
+/**
+  @file bounds.c
+  @author Adrian Chan (amchan)
+  This program checks for overflow errors for addtion, subtraction, multiplication, and division. It also checks if there is an attempt to divide by 0.
+*/
 #include "bounds.h"
 #include <limits.h>
 #include <stdlib.h>
