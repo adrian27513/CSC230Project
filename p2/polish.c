@@ -42,7 +42,7 @@ static long parseExpression()
     }
     ch = getchar();
   }
-  exit(102);
+  exit(FAIL_INPUT);
 }
 
 int main()

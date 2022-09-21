@@ -4,21 +4,24 @@
 #include <stdbool.h>
 #include <limits.h>
 
+#define OUTSIDE_LONG_RANGE 100
+#define BASE_32_OFFSET 10
+
 static long charToDigit(int ch)
 {
   if (ch >= '0' && '9' >= ch) {
     return ch - '0';
   } else if (ch >= 'A' && 'V' >= ch) {
-    return ch - 'A' + 10;
+    return ch - 'A' + BASE_32_OFFSET;
   }
-  exit(102);
+  exit(FAIL_INPUT);
 }
 
 static int digitToChar(long d) {
   if (d <= 9) {
     return d + '0';
   }
-  return d - 10 + 'A';
+  return d - BASE_32_OFFSET + 'A';
 }
 
 static bool acceptedChar(int ch)
@@ -32,7 +35,7 @@ static bool validateChar(int ch)
   } else if (acceptedChar(ch)) {
     return false;
   } else {
-    exit(102);
+    exit(FAIL_INPUT);
   }
 }
 long readNumber()
@@ -53,11 +56,11 @@ long readNumber()
     
     if (negative) {
       if (LONG_MIN - value > sum) {
-        exit(100);
+        exit(OUTSIDE_LONG_RANGE);
       }
     } else {
       if (LONG_MAX - value < sum) {
-        exit(100);
+        exit(OUTSIDE_LONG_RANGE);
       }
     }
     value = value + sum;
