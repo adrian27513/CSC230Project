@@ -9,3 +9,8 @@ polish.o:polish.c base.h bounds.h
 base10.o:base10.c base.h
 base32.o:base32.c base.h
 bounds.o:bounds.c bounds.h
+clean:
+			rm *.o
+			rm polish10
+			rm polish32
+			rm output.txt
