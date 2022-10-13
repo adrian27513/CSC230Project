@@ -36,25 +36,37 @@ void expand(char *src, char *dest, char *tlist[], char *rlist[], int pairs)
   char ch = *src;
   char *start = src;
   char *ptr = src;
+  bool end = false;
   
   while (!wordChar(ch) && ch != '\n') {
       ptr++;
       *dest++ = ch;
       ch = *ptr;
-    }
+  }
+  if (ch == '\n') {
+    end = true;
+  }
   start = ptr;
-  
   while (ch != '\n') {
+    
     while (wordChar(ch)) {
       ptr++;
       ch = *ptr;
     }
+    
+    if (ch == '\n') {
+      end = true;
+    }
     int length = ptr - start;
-    char str[length + 1];
+    
+    int stringLength = length + 2;
+    
+    char str[stringLength];
     char *temp = start;
     for (int i = 0; i < length; i++) {
       str[i] = *temp++;
     }
+    
     str[length] = '\0';
     
     bool found = false;
@@ -77,7 +89,15 @@ void expand(char *src, char *dest, char *tlist[], char *rlist[], int pairs)
       *dest++ = ch;
       ch = *ptr;
     }
+    
+    if (ch == '\n') {
+      end = true;
+    }
     start = ptr;
+  }
+  
+  if (end) {
+    *dest++ = '\n';
   }
   *dest = '\0';
 }
