@@ -1,5 +1,9 @@
 /**
-  */
+  @file expand.c
+  @author Adrian Chan (amchan)
+  This program checks the validatiy of a given character, calculates the amount the original string will need to be expanded by, and expands the string
+  using given target-replacement pairs.
+*/
 
 #include "expand.h"
 

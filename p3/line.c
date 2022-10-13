@@ -1,5 +1,8 @@
 /**
-  */
+  @file line.c
+  @author Adrian Chan (amchan)
+  This program measures the next line length of a given file and reads in the next line from a file to a string.
+*/
 
 #include "line.h"
 
