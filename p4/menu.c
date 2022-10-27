@@ -52,6 +52,11 @@ void readMenuItems(char const *filename, Menu *menu)
         exit(1);
       }    
     }
+    
+    if (strlen(item->id) < 4) {
+      fprintf(stderr, "Invalid menu file: %s\n", filename);
+      exit(1);
+    }
     item->cost = cost;
     
     (menu->list)[index++] = item;
