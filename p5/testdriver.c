@@ -35,8 +35,6 @@ int main()
   // As you finish parts of your implementation, move this directive
   // down past the blocks of code below.  That will enable tests of
   // various functions you're expected to implement.
-
-#ifdef NEVER
   
   ////////////////////////////////////////////////////////////////////////
   // Tests for byteBuffer component.
@@ -102,7 +100,7 @@ int main()
 
     freeBuffer( buffer );
   }
-
+  
   ////////////////////////////////////////////////////////////////////////
   // Test readFile()
   
@@ -155,7 +153,7 @@ int main()
     ByteBuffer *buffer = readFile( "no-input-file.txt" );
     TestCase( buffer == NULL );
   }
-
+  
   ////////////////////////////////////////////////////////////////////////
   // Tests for the ripeMD component
   ////////////////////////////////////////////////////////////////////////
@@ -207,7 +205,7 @@ int main()
     result = bitwiseF4Wrapper( b, c, d );
     TestCase( result == 0x548A70FE );
   }
-
+    
   ////////////////////////////////////////////////////////////////////////
   // Test the rotateLeft() function.
   
@@ -552,9 +550,6 @@ int main()
     TestCase( state.D == 0x5135AFAC );
     TestCase( state.E == 0x639BEE89 );
   }
-
-  
-#endif
 
   printf( "You passed %d / %d unit tests\n", passedTests, totalTests );
 

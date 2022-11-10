@@ -14,15 +14,17 @@ void initState(HashState *state)
 
 void padBuffer(ByteBuffer *buffer)
 {
+  unsigned long original = buffer->len * 8;
   addByte(buffer, 0x80);
-  int zeroAdd = (buffer->len % 64) - 8;
+  int zeroAdd = (64 - (buffer->len % 64)) - 8;
   
   for (int i = 0; i < zeroAdd; i++) {
     addByte(buffer, 0x00);
   }
   
+  unsigned long mask = 0xFF;
   for (int i = 0; i < 8; i++) {
-    addByte(buffer, buffer->len & (0xFF << (i * 8)));
+    addByte(buffer, (original & (mask << (i * 8))) >> (i*8));
   }
 }
 
@@ -164,7 +166,7 @@ void hashBlock(HashState *state, byte block[BLOCK_BYTES])
   for (int i = 0; i < BLOCK_LONGWORDS; i++) {
     longword temp = 0;
     for (int j = 0; j < 4; j++) {
-      longword b = (longword) block[i];
+      longword b = (longword) block[(i*4) + j];
       temp |= (b << (j * 8));
     }
     data[i] = temp;
