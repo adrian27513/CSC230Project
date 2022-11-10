@@ -15,6 +15,7 @@ void initState(HashState *state)
 void padBuffer(ByteBuffer *buffer)
 {
   unsigned long original = buffer->len * 8;
+  
   addByte(buffer, 0x80);
   int zeroAdd = (64 - (buffer->len % 64)) - 8;
   
@@ -24,7 +25,7 @@ void padBuffer(ByteBuffer *buffer)
   
   unsigned long mask = 0xFF;
   for (int i = 0; i < 8; i++) {
-    addByte(buffer, (original & (mask << (i * 8))) >> (i*8));
+    addByte(buffer, (original & (mask << (i * 8))) >> (i * 8));
   }
 }
 
@@ -32,7 +33,7 @@ static void printHelper(longword field)
 {
   
   for (int i = 0; i < 4; i++) {
-    printf("%0x", field & (0xFF << (i * 8)));
+    printf("%02x", (field & (0xFF << (i * 8))) >> (i * 8));
   }
 }
 void printHash(HashState *state)
@@ -42,6 +43,7 @@ void printHash(HashState *state)
   printHelper(state->C);
   printHelper(state->D);
   printHelper(state->E);
+  printf("\n");
 }
 
 static longword bitwiseF0(longword a, longword b, longword c)
