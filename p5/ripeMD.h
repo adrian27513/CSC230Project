@@ -23,6 +23,12 @@ typedef unsigned int longword;
 
 #define BYTE_MASK 0xFF
 
+#define LONGWORD_BLEN 32
+
+#define C_ROTATE 10
+
+#define RIPE_ROUNDS 5
+
 /** Type for a pointer to the bitwise f function used in each round. */
 typedef longword (*BitwiseFunction)( longword b, longword c, longword d );
 
