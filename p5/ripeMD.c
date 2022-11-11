@@ -1,4 +1,7 @@
-/** 
+/**
+  @file ripeMD.c
+  @author Adrian Chan (amchan)
+  Processes HashStates to the requirements of ripeMD
 */
 
 #include "ripeMD.h"
@@ -30,12 +33,17 @@ void padBuffer(ByteBuffer *buffer)
   }
 }
 
+/**
+  Helps print out a HashState to the requirements of ripeMD
+  @param field longword to print out in the right order
+*/
 static void printHelper(longword field)
 { 
   for (int i = 0; i < sizeof(longword); i++) {
     printf("%02x", (field & (BYTE_MASK << (i * BBITS))) >> (i * BBITS));
   }
 }
+
 void printHash(HashState *state)
 {
   printHelper(state->A);
@@ -46,36 +54,86 @@ void printHash(HashState *state)
   printf("\n");
 }
 
+/**
+  ripeMD version 0 bitwise function definition
+  @param a first longword input
+  @param b second longword input
+  @param c third longword input
+  @return version 0 longword definition
+*/
 static longword bitwiseF0(longword a, longword b, longword c)
 {
   return a ^ b ^ c;
 }
 
+/**
+  ripeMD version 1 bitwise function definition
+  @param a first longword input
+  @param b second longword input
+  @param c third longword input
+  @return version 1 longword definition
+*/
 static longword bitwiseF1(longword a, longword b, longword c)
 {
   return (a & b) | (~a & c);
 }
 
+/**
+  ripeMD version 2 bitwise function definition
+  @param a first longword input
+  @param b second longword input
+  @param c third longword input
+  @return version 2 longword definition
+*/
 static longword bitwiseF2(longword a, longword b, longword c)
 {
   return (a | ~b) ^ c;
 }
+
+/**
+  ripeMD version 3 bitwise function definition
+  @param a first longword input
+  @param b second longword input
+  @param c third longword input
+  @return version 3 longword definition
+*/
 static longword bitwiseF3(longword a, longword b, longword c)
 {
   return (a & c) | (b & ~c);
 }
 
+/**
+  ripeMD version 4 bitwise function definition
+  @param a first longword input
+  @param b second longword input
+  @param c third longword input
+  @return version 4longword definition
+*/
 static longword bitwiseF4(longword a, longword b, longword c)
 {
   return a ^ (b | ~c);
 }
 
+/**
+  Rotates a given longword by s bits.
+  @param value longword to rotate
+  @param s number of bits to rotate by
+  @return rotated longword
+*/
 static longword rotateLeft(longword value, int s)
 {
-  longword mask = UINT_MAX << (LONGWORD_BLEN - s);
-  return (value << s) | ((value & mask) >> (LONGWORD_BLEN - s)); 
+  longword mask = UINT_MAX << ((sizeof(longword) * BBITS) - s);
+  return (value << s) | ((value & mask) >> ((sizeof(longword) * BBITS) - s)); 
 }
 
+/**
+  Processes a HashState for one iteration to the requirements of ripeMD
+  @param state HashState to process
+  @param datum longword element
+  @param shift shift amount
+  @param noise noised used for this iteration
+  @param f bitwise function used for this iteration
+*/
 static void hashIteration(HashState *state, longword datum, int shift, longword noise, BitwiseFunction f)
 {
   longword A = state->A;
@@ -91,6 +149,15 @@ static void hashIteration(HashState *state, longword datum, int shift, longword 
   state->E = D;
 }
 
+/**
+  Processes a HashState for one round to the requirements of ripeMD
+  @param state HashState to process
+  @param data longword data array
+  @param perm permulation array
+  @param shift shift array
+  @param noise noise used for this round
+  @param f bitwise function used for this round
+*/
 static void hashRound(HashState *state, longword data[BLOCK_LONGWORDS], int perm[RIPE_ITERATIONS], int shift[RIPE_ITERATIONS], longword noise, BitwiseFunction f)
 {
   for (int i = 0; i < BLOCK_LONGWORDS; i++) {

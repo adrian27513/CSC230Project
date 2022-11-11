@@ -1,8 +1,10 @@
-/** 
+/**
+  @file byteBuffer.c
+  @author Adrian Chan
+  Creates and processes ByteBuffers to the requirements of ripeMD
 */
 
 #include "byteBuffer.h"
-
 
 ByteBuffer *createBuffer()
 {
@@ -17,7 +19,7 @@ ByteBuffer *createBuffer()
 void addByte(ByteBuffer *buffer, byte b)
 {
   if (buffer->len == buffer->cap) {
-    buffer->cap *= DOUBLE_SIZE;
+    buffer->cap *= CAP_INCREASE;
     buffer->data = realloc(buffer->data, buffer->cap * sizeof(byte));
   }
   
@@ -44,7 +46,7 @@ ByteBuffer *readFile(const char *filename)
     bytesRead = fread(buffer->data + buffer->len, sizeof(byte), buffer->cap - buffer->len, fp);
     buffer->len += bytesRead;
     if (buffer->len == buffer->cap) {
-      buffer->cap *= DOUBLE_SIZE;
+      buffer->cap *= CAP_INCREASE;
       buffer->data = realloc(buffer->data, buffer->cap * sizeof(byte));
     }
   }

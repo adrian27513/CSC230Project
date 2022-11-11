@@ -1,4 +1,7 @@
-/** 
+/**
+  @file ripeMD.h
+  @author Adrian Chan (amchan)
+  Header file and declares the public implementation of ripeMD.c
 */
 
 #ifndef _RIPEMD_H_
@@ -19,14 +22,16 @@ typedef unsigned int longword;
 /** Number of iterations for each round. */
 #define RIPE_ITERATIONS 16
 
+/** Number of bytes for length padding */
 #define LEN_BLEN 8
 
+/** Initial Hexadecimal for byte mask */
 #define BYTE_MASK 0xFF
 
-#define LONGWORD_BLEN 32
-
+/** Number of left rotations for state C */
 #define C_ROTATE 10
 
+/** Number of rounds for each RIPEMD block */
 #define RIPE_ROUNDS 5
 
 /** Type for a pointer to the bitwise f function used in each round. */
@@ -54,12 +59,29 @@ typedef struct {
   
 } HashState;
 
+/**
+  Sets the initial state of a given HashState
+  @param state HashState to initialize
+*/
 void initState(HashState *state);
 
+/**
+  Pads a given buffer to the requirements of ripeMD
+  @param buffer ByteBuffer to pad
+*/
 void padBuffer(ByteBuffer *buffer);
 
+/**
+  Prints out a the final ripeMD hash from a given HashState to the requirements of ripeMD
+  @param state HashState to print out
+*/
 void printHash(HashState *state);
 
+/**
+  Processes one HashState and given data block to the requirments of ripeMD
+  @param state HashState to process
+  @param block block of data as bytes
+*/
 void hashBlock(HashState *state, byte block[BLOCK_BYTES]);
 
 // If we're compiling for test, expose a collection of wrapper
