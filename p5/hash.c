@@ -4,9 +4,10 @@
 #include "byteBuffer.h"
 #include "ripeMD.h"
 
+#define ONE_USER_INPUT 2
 int main(int argc, char *argv[])
 {
-  if (argc != 2) {
+  if (argc != ONE_USER_INPUT) {
     fprintf(stderr, "usage: hash <input-file>\n");
     exit(1);
   }
@@ -20,8 +21,8 @@ int main(int argc, char *argv[])
   initState(state);
   padBuffer(buffer);
   
-  for (int i = 0; i < buffer->len / 64; i++) {
-    hashBlock(state, buffer->data + (64 * i));
+  for (int i = 0; i < buffer->len / BLOCK_BYTES; i++) {
+    hashBlock(state, buffer->data + (BLOCK_BYTES * i));
   }
   free(buffer);
   printHash(state);

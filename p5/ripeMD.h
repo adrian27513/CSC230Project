@@ -19,6 +19,10 @@ typedef unsigned int longword;
 /** Number of iterations for each round. */
 #define RIPE_ITERATIONS 16
 
+#define LEN_BLEN 8
+
+#define BYTE_MASK 0xFF
+
 /** Type for a pointer to the bitwise f function used in each round. */
 typedef longword (*BitwiseFunction)( longword b, longword c, longword d );
 

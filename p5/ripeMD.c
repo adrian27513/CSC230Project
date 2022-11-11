@@ -2,6 +2,7 @@
 */
 
 #include "ripeMD.h"
+#include "byteBuffer.h"
 
 void initState(HashState *state)
 {
@@ -14,26 +15,25 @@ void initState(HashState *state)
 
 void padBuffer(ByteBuffer *buffer)
 {
-  unsigned long original = buffer->len * 8;
+  unsigned long original = buffer->len * BBITS;
   
   addByte(buffer, 0x80);
-  int zeroAdd = (64 - (buffer->len % 64)) - 8;
+  int zeroAdd = (BLOCK_BYTES - (buffer->len % BLOCK_BYTES)) - LEN_BLEN;
   
   for (int i = 0; i < zeroAdd; i++) {
     addByte(buffer, 0x00);
   }
   
-  unsigned long mask = 0xFF;
-  for (int i = 0; i < 8; i++) {
-    addByte(buffer, (original & (mask << (i * 8))) >> (i * 8));
+  //unsigned long mask = BYTE_MASK;
+  for (int i = 0; i < LEN_BLEN; i++) {
+    addByte(buffer, (original & (BYTE_MASK << (i * BBITS))) >> (i * BBITS));
   }
 }
 
 static void printHelper(longword field)
-{
-  
-  for (int i = 0; i < 4; i++) {
-    printf("%02x", (field & (0xFF << (i * 8))) >> (i * 8));
+{ 
+  for (int i = 0; i < sizeof(longword); i++) {
+    printf("%02x", (field & (BYTE_MASK << (i * BBITS))) >> (i * BBITS));
   }
 }
 void printHash(HashState *state)
