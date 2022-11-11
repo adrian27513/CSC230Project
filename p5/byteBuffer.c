@@ -7,9 +7,9 @@
 ByteBuffer *createBuffer()
 {
   ByteBuffer *buffer = malloc(sizeof(ByteBuffer));
-  buffer->data = malloc(5 * sizeof(byte));
+  buffer->data = malloc(INITIAL_CAP * sizeof(byte));
   buffer->len = 0;
-  buffer->cap = 5;
+  buffer->cap = INITIAL_CAP;
   
   return buffer;
 }
@@ -17,7 +17,7 @@ ByteBuffer *createBuffer()
 void addByte(ByteBuffer *buffer, byte b)
 {
   if (buffer->len == buffer->cap) {
-    buffer->cap *= 2;
+    buffer->cap *= DOUBLE_SIZE;
     buffer->data = realloc(buffer->data, buffer->cap * sizeof(byte));
   }
   
@@ -44,7 +44,7 @@ ByteBuffer *readFile(const char *filename)
     bytesRead = fread(buffer->data + buffer->len, sizeof(byte), buffer->cap - buffer->len, fp);
     buffer->len += bytesRead;
     if (buffer->len == buffer->cap) {
-      buffer->cap *= 2;
+      buffer->cap *= DOUBLE_SIZE;
       buffer->data = realloc(buffer->data, buffer->cap * sizeof(byte));
     }
   }

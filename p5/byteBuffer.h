@@ -9,6 +9,9 @@
 /** Number of bits in a byte */
 #define BBITS 8
 
+#define INITIAL_CAP 5
+
+#define DOUBLE_SIZE 2
 /** Type used as a byte. */
 typedef unsigned char byte;
 
