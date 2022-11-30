@@ -315,8 +315,8 @@ static Expr *parseTerm( char tok[ MAX_TOKEN + 1 ], FILE *fp )
   }
   
   if (strcmp(tok, "len") == 0) {
-  	return makeLen(parseExpr(expectToken(tok, fp), fp));
-	}
+    return makeLen(parseExpr(expectToken(tok, fp), fp));
+  }
 
   if ( tok[ 0 ] == '-' || isdigit( tok[ 0 ] ) ) {
     // It's an int value, parse it and returna LiteraInt object.
