@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 
+/** Doule the capacity of an array */
+#define DOUBLE_CAPACITY 2
 //////////////////////////////////////////////////////////////////////
 // Error-reporting functions
 
@@ -160,7 +162,7 @@ static Value evalAdd( Expr *expr, Environment *env )
   if (v1.vtype == SeqType && v2.vtype == SeqType) {
     for (int i = 0; i < v1.sval->len; i++) {
       if (s->len == s->cap) {
-        s->cap *= 2;
+        s->cap *= DOUBLE_CAPACITY;
         s->arr = realloc(s->arr, s->cap * sizeof(int));
       }
       s->arr[s->len] = v1.sval->arr[i];
@@ -169,7 +171,7 @@ static Value evalAdd( Expr *expr, Environment *env )
     
     for (int i = 0; i < v2.sval->len; i++) {
       if (s->len == s->cap) {
-        s->cap *= 2;
+        s->cap *= DOUBLE_CAPACITY;
         s->arr = realloc(s->arr, s->cap * sizeof(int));
       }
       s->arr[s->len] = v2.sval->arr[i];
@@ -191,7 +193,7 @@ static Value evalAdd( Expr *expr, Environment *env )
   
   for (int i = 0; i < seqVal.sval->len; i++) {
     if (s->len == s->cap) {
-      s->cap *= 2;
+      s->cap *= DOUBLE_CAPACITY;
       s->arr = realloc(s->arr, s->cap * sizeof(int));
     }
     s->arr[s->len] = seqVal.sval->arr[i];
@@ -271,7 +273,7 @@ static Value evalMul( Expr *expr, Environment *env )
   for (int i = 0; i < intVal.ival; i++) {
     for (int j = 0; j < seqVal.sval->len; j++) {
       if (s->len == s->cap) {
-        s->cap *= 2;
+        s->cap *= DOUBLE_CAPACITY;
         s->arr = realloc(s->arr, s->cap * sizeof(int));
       }
       
@@ -507,7 +509,7 @@ static Value evalSeq(Expr *expr, Environment *env)
   Sequence *s = makeSequence();
   for (int i = 0; i < this->len; i++) {
     if (s->len == s->cap) {
-      s->cap *= 2;
+      s->cap *= DOUBLE_CAPACITY;
       s->arr = realloc(s->arr, s->cap * sizeof(int));
     }
     s->arr[s->len++] = this->expList[i]->eval(this->expList[i], env).ival;
@@ -886,7 +888,7 @@ static void executePush(Stmt *stmt, Environment *env)
   Value val = this->expr1->eval(this->expr1, env);
   
   if (val.sval->len == val.sval->cap) {
-    val.sval->cap *= 2;
+    val.sval->cap *= DOUBLE_CAPACITY;
     val.sval->arr = realloc(val.sval->arr, val.sval->cap * sizeof(int));
   }
   

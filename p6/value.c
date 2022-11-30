@@ -9,15 +9,21 @@
 #include <string.h>
 #include <assert.h>
 
+
+/** Initial capacity for the resizable array */
+#define INITIAL_CAPACITY 5
+
+/** Double the capacity of an array */
+#define DOUBLE_CAPACITY 2
 //////////////////////////////////////////////////////////////////////
 // Sequence.
 
 Sequence *makeSequence()
 {
   Sequence *seq = malloc(sizeof(Sequence));
-  seq->arr = malloc(5 * sizeof(int));
+  seq->cap = INITIAL_CAPACITY;
+  seq->arr = malloc(seq->cap * sizeof(int));
   seq->len = 0;
-  seq->cap = 5;
   seq->ref = 0;
   
   grabSequence(seq);
@@ -70,7 +76,7 @@ struct EnvironmentStruct {
 Environment *makeEnvironment()
 {
   Environment *env = (Environment *) malloc( sizeof( Environment ) );
-  env->capacity = 5;
+  env->capacity = INITIAL_CAPACITY;
   env->len = 0;
   env->vlist = (VarRec *) malloc( sizeof( VarRec ) * env->capacity );
   return env;
@@ -95,7 +101,7 @@ void setVariable( Environment *env, char const *name, Value value )
 
   if ( pos >= env->len ) {
     if ( env->len >= env->capacity ) {
-      env->capacity *= 2;
+      env->capacity *= DOUBLE_CAPACITY;
       env->vlist = (VarRec *) realloc( env->vlist, sizeof( VarRec ) * env->capacity );
     }
   }

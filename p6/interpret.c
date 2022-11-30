@@ -12,6 +12,8 @@
 #include "syntax.h"
 #include "parse.h"
 
+/** Length of argc with one user input from the command line */
+#define ONE_CMD_INPUT 2
 /** Print a usage message then exit unsuccessfully. */
 void usage()
 {
@@ -27,7 +29,7 @@ void usage()
 int main( int argc, char *argv[] )
 {
   // Open the program's source.
-  if ( argc != 2 )
+  if ( argc != ONE_CMD_INPUT )
     usage();
   
   FILE *fp = fopen( argv[ 1 ], "r" );

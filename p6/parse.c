@@ -19,6 +19,9 @@ static Expr *parseExpr( char *tok, FILE *fp );
 // statements in a compound statement.
 #define INITIAL_CAPACITY 5
 
+/** Double the capacity of an array */
+#define DOUBLE_CAPACITY 2
+
 //////////////////////////////////////////////////////////////////////
 // Input tokenization
 
@@ -256,7 +259,7 @@ static Expr **commaHelper(char *tok, FILE *fp, Expr **elist, int *len, int cap)
   }
   
   if (*len == cap) {
-    cap *= 2;
+    cap *= DOUBLE_CAPACITY;
     elist = realloc(elist, cap * sizeof(Expr *));
   }
   if (strcmp(tok, ",") == 0) {
@@ -283,13 +286,13 @@ static Expr *parseTerm( char tok[ MAX_TOKEN + 1 ], FILE *fp )
   }
   
   if (tok[0] == '"') {
-    int cap = 5;
+    int cap = INITIAL_CAPACITY;
     Expr **elist = malloc(cap * sizeof(Expr *));
     int len = 0;
     
     while (tok[len + 1] != '"') {
       if (len == cap) {
-        cap *= 2;
+        cap *= DOUBLE_CAPACITY;
         elist = realloc(elist, cap * sizeof(Expr *));
       }
       elist[len] = makeLiteralInt(tok[len + 1]);
@@ -301,7 +304,7 @@ static Expr *parseTerm( char tok[ MAX_TOKEN + 1 ], FILE *fp )
   }
   
   if (strcmp(tok, "[") == 0) {
-    int cap = 5;
+    int cap = INITIAL_CAPACITY;
     int len = 0;
     Expr **elist = malloc(cap * sizeof(Expr *));
     
@@ -399,7 +402,7 @@ Stmt *parseStmt( char *tok, FILE *fp )
     // Keep parsing statements until we hit the closing curly bracket.
     while ( strcmp( expectToken( tok, fp ), "}" ) != 0 ) {
       if ( len >= cap ) {
-        cap *= 2;
+        cap *= DOUBLE_CAPACITY;
         stmtList = (Stmt **) realloc( stmtList, cap * sizeof( Stmt * ) );
       }
       stmtList[ len++ ] = parseStmt( tok, fp );
