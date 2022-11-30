@@ -1,6 +1,6 @@
 /**
   @file value.h
-  @author
+  @author Adrian Chan (amchan)
 
   Support for representing different types of values that could be computed
   by our programming language.

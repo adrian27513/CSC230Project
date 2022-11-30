@@ -1,3 +1,8 @@
+/**
+  @file interpret.c
+  @author Adrian Chan (amchan)
+  Interprets and executes a given program file.
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,6 +19,11 @@ void usage()
   exit( EXIT_FAILURE );
 }
 
+/** Program staring point Interprets and executes a given program file.
+    @param argc number of command line arguments
+    @param argv list of command line arguments
+    @return exit status of program
+*/
 int main( int argc, char *argv[] )
 {
   // Open the program's source.

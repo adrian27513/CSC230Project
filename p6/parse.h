@@ -1,6 +1,6 @@
 /**
   @file parse.h
-  @author
+  @author Adrian Chan (amchan)
 
   Parser and tokenizer functions.
 */

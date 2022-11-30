@@ -1,3 +1,8 @@
+/**
+  @file value.c
+  @author Adrian Chan (amchan)
+  Represents different types of values that can be computed by the programming language.
+*/
 #include "value.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,6 +19,8 @@ Sequence *makeSequence()
   seq->len = 0;
   seq->cap = 5;
   seq->ref = 0;
+  
+  grabSequence(seq);
   
   return seq;
 }

@@ -1,3 +1,9 @@
+/**
+  @file syntax.c
+  @author Adrian Chan (amchan)
+  Abstract representation of expressions and statements in the programming language
+*/
+
 #include "syntax.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -143,13 +149,63 @@ static Value evalAdd( Expr *expr, Environment *env )
   // Evaluate our left and right operands. 
   Value v1 = this->expr1->eval( this->expr1, env );
   Value v2 = this->expr2->eval( this->expr2, env );
-
-  // Make sure the operands are both integers.
-  requireIntType( &v1 );
-  requireIntType( &v2 );
-
-  // Return the sum of the two expression values.
-  return (Value){ IntType, .ival = v1.ival + v2.ival };
+  
+  if (v1.vtype == IntType && v2.vtype == IntType) {
+    // Return the sum of the two expression values.
+    return (Value){ IntType, .ival = v1.ival + v2.ival };
+  }
+  
+  Sequence *s = makeSequence();
+  
+  if (v1.vtype == SeqType && v2.vtype == SeqType) {
+    for (int i = 0; i < v1.sval->len; i++) {
+      if (s->len == s->cap) {
+        s->cap *= 2;
+        s->arr = realloc(s->arr, s->cap * sizeof(int));
+      }
+      s->arr[s->len] = v1.sval->arr[i];
+      s->len++;
+    }
+    
+    for (int i = 0; i < v2.sval->len; i++) {
+      if (s->len == s->cap) {
+        s->cap *= 2;
+        s->arr = realloc(s->arr, s->cap * sizeof(int));
+      }
+      s->arr[s->len] = v2.sval->arr[i];
+      s->len++;
+    }
+    
+    releaseSequence(v1.sval);
+    releaseSequence(v2.sval);
+    
+    return (Value) {SeqType, .sval = s};
+  }
+  
+  Value seqVal = v1;
+  if (v1.vtype == IntType) {
+    seqVal = v2;
+    s->arr[s->len] = v1.ival;
+    s->len++;
+  }
+  
+  for (int i = 0; i < seqVal.sval->len; i++) {
+    if (s->len == s->cap) {
+      s->cap *= 2;
+      s->arr = realloc(s->arr, s->cap * sizeof(int));
+    }
+    s->arr[s->len] = seqVal.sval->arr[i];
+    s->len++;
+  }
+  
+  if (v2.vtype == IntType) {
+    s->arr[s->len] = v2.ival;
+    s->len++;
+  }
+  
+  releaseSequence(seqVal.sval);
+  
+  return (Value) {SeqType, .sval = s};
 }
 
 Expr *makeAdd( Expr *left, Expr *right )
@@ -197,13 +253,35 @@ static Value evalMul( Expr *expr, Environment *env )
   // Evaluate our left and right operands. 
   Value v1 = this->expr1->eval( this->expr1, env );
   Value v2 = this->expr2->eval( this->expr2, env );
-
-  // Make sure the operands are both integers.
-  requireIntType( &v1 );
-  requireIntType( &v2 );
-
-  // Return the product of the two expression.
-  return (Value){ IntType, .ival = v1.ival * v2.ival };
+  
+  if (v1.vtype == IntType && v2.vtype == IntType) {
+    // Return the product of the two expression.
+    return (Value){ IntType, .ival = v1.ival * v2.ival };
+  }
+  
+  if (v1.vtype == SeqType && v2.vtype == SeqType) {
+    fprintf(stderr, "Type mismatch\n");
+    exit(1);
+  }
+  
+  Value intVal = v1.vtype == IntType ? v1 : v2;
+  Value seqVal = v1.vtype == IntType ? v2 : v1;
+  
+  Sequence *s = makeSequence();
+  for (int i = 0; i < intVal.ival; i++) {
+    for (int j = 0; j < seqVal.sval->len; j++) {
+      if (s->len == s->cap) {
+        s->cap *= 2;
+        s->arr = realloc(s->arr, s->cap * sizeof(int));
+      }
+      
+      s->arr[s->len] = seqVal.sval->arr[j];
+      s->len++;
+    }
+  }
+  
+  releaseSequence(seqVal.sval);
+  return (Value){SeqType, .sval = s};
 }
 
 Expr *makeMul( Expr *left, Expr *right )
@@ -409,6 +487,9 @@ Expr *makeEquals( Expr *left, Expr *right )
 //////////////////////////////////////////////////////////////////////
 // Sequence
 
+
+/** Representation for a SequenceExpr expression, a subclass of Expr that
+    evaluates to a Sequence value. */
 typedef struct {
   Value (*eval)(Expr *expr, Environment *env);
   void (*destroy)(Expr *expr);
@@ -418,6 +499,7 @@ typedef struct {
   
 } SequenceExpr;
 
+/** Eval function for SequenceExpr */
 static Value evalSeq(Expr *expr, Environment *env)
 {
   SequenceExpr *this = (SequenceExpr *)expr;
@@ -431,12 +513,11 @@ static Value evalSeq(Expr *expr, Environment *env)
     s->arr[s->len++] = this->expList[i]->eval(this->expList[i], env).ival;
   }
   
-  grabSequence(s);
-  
   return (Value){SeqType, .sval = s};
 
 }
 
+/** Destroy function for SequenceExpr */
 static void destroySeq(Expr *expr)
 {
   SequenceExpr *this = (SequenceExpr*)expr;
@@ -461,6 +542,7 @@ Expr *makeSeqInit(int len, Expr **elist) {
 //////////////////////////////////////////////////////////////////////
 //Sequence Index
 
+/** Eval function for SequenceIndex */
 static Value evalSequenceIndex(Expr *expr, Environment *env)
 { 
   SimpleExpr *this = (SimpleExpr *)expr;
@@ -488,6 +570,7 @@ Expr *makeSequenceIndex(Expr *aexpr, Expr *iexpr)
 //////////////////////////////////////////////////////////////////////
 // Length
 
+/** Eval function for len expression */
 static Value evalLen(Expr *expr, Environment *env)
 {
   SimpleExpr *this = (SimpleExpr *)expr;
@@ -523,6 +606,7 @@ typedef struct {
   char name[ MAX_VAR_NAME + 1 ];
 } VariableExpr;
 
+/** Eval function for Variable */
 static Value evalVariable( Expr *expr, Environment *env )
 {
   // If this function gets called, expr must really be a VariableExpr
@@ -795,6 +879,7 @@ Stmt *makeWhile( Expr *cond, Stmt *body )
 ///////////////////////////////////////////////////////////////////////
 //push statement
 
+/** implementation of the execute function for a push statement */
 static void executePush(Stmt *stmt, Environment *env)
 {
   SimpleStmt *this = (SimpleStmt *) stmt;

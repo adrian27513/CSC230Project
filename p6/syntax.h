@@ -1,6 +1,6 @@
 /**
   @file syntax.h
-  @author
+  @author Adrian Chan (amchan)
 
   Abstract representation for expressions and statements in our
   language.
@@ -128,10 +128,25 @@ Expr *makeOr( Expr *left, Expr *right );
 Expr *makeVariable( char const *name );
 
 
+/** Make an expression that evaluates to a Sequence of of the values from the given
+    expression list.
+    @param len length of elist
+    @param elist list of expression in the Sequence
+    @return pointer to a new, dynamically allocated subclass of Expr.
+*/
 Expr *makeSeqInit(int len, Expr **elist);
 
+/** Make an expression that evaluates to a value in a Sequence at a given index.
+    @param aexp the sequence to be indexed
+    @param iexp the index to get the value from
+    @return pointer to a new, dynamically allocated subclass of Expr.
+*/
 Expr *makeSequenceIndex(Expr *aexp, Expr *iexp);
 
+/** Make an expression that evaluates to the length of a given Sequence.
+    @param expr the Sequence to be evaluated
+    @return pointer to a new, dynamically allocated subclass of Expr.
+*/
 Expr *makeLen(Expr *expr);
 //////////////////////////////////////////////////////////////////////
 // Stmt, an interface for a statement in the input program.
@@ -198,6 +213,12 @@ Stmt *makeIf( Expr *cond, Stmt *body );
  */
 Stmt *makeWhile( Expr *cond, Stmt *body );
 
+/** Make a representation of a push statement that pushes a values onto the end
+    of a sequence.
+    @param s the sequence to push the value onto
+    @param v the value to be pushed
+    @return A new statement object that can perform the push statement;
+*/
 Stmt *makePush(Expr *s, Expr *v);
 /** Make a representation of an assignment statement.  It is intended to
     work for assigning to a variable (if idx is null), or changing just

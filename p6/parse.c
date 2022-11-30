@@ -1,3 +1,9 @@
+/**
+  @file parse.c
+  @author Adrian Chan (amchan)
+  Parser and tokenizer functions.
+*/
+
 #include "parse.h"
 #include <stdlib.h>
 #include <string.h>
@@ -234,6 +240,15 @@ static bool isInfixOperator( char const *tok )
     strcmp( tok, "[" ) == 0;
 }
 
+
+/** Helper function to parse comma expressions recursively
+    @param tok token parsed from input
+    @param fp file tokens should be read from
+    @param elist array to add expressions to
+    @param len length of elist
+    @param cap capacity of the elist
+    @return the elist array filed with expressions
+*/
 static Expr **commaHelper(char *tok, FILE *fp, Expr **elist, int *len, int cap) 
 {
   if (strcmp(tok, "]") == 0) {
